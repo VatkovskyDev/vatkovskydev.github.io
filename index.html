@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoolPlugin Studio - Разработка плагинов и дизайн</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Общие стили как у play2go */
+        .general-background {
+            background: linear-gradient(180deg, #12001480, #ff004d33);
+        }
+
+        .general-panel {
+            backdrop-filter: blur(12.7px);
+            background: linear-gradient(0deg, #0003, #0003), linear-gradient(180deg, transparent, rgba(0,0,0,.8));
+        }
+
+        .general-text {
+            background: linear-gradient(180deg, #ff689eb8 28.05%, #ff004d54);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .smooth {
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Хедер */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(153, 153, 153, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 4rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ff004d;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        /* Hero секция */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            background: linear-gradient(180deg, #12001480, #ff004d33);
+            position: absolute;
+            inset: 0;
+            border-radius: 12px;
+            margin: 2rem;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 4rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text {
+            display: flex;
+            flex-col;
+            gap: 2rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.1;
+        }
+
+        .hero h2 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(180deg, #ff689eb8 28.05%, #ff004d54);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .hero-button {
+            background: linear-gradient(135deg, #ff004d, #b6004c);
+            color: #ffffff;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 0, 77, 0.3);
+            width: fit-content;
+        }
+
+        .hero-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 0, 77, 0.4);
+        }
+
+        /* Статистика панель */
+        .stats-panel {
+            backdrop-filter: blur(12.7px);
+            background: linear-gradient(0deg, #0003, #0003), linear-gradient(180deg, transparent, rgba(0,0,0,.8));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 4rem;
+            position: absolute;
+            bottom: 0;
+            left: 2rem;
+            right: 2rem;
+            border-radius: 0 0 12px 12px;
+            z-index: 3;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1rem;
+        }
+
+        /* Секции */
+        section {
+            padding: 6rem 4rem;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #ffffff;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(90deg, #b6004c, #590000);
+            z-index: -1;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        /* О студии */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .features-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 0, 77, 0.3);
+            background: rgba(255, 0, 77, 0.05);
+        }
+
+        .feature-card h3 {
+            color: #ff004d;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        /* Услуги */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .service-card {
+            background: linear-gradient(135deg, rgba(255, 0, 77, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 77, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .service-card:hover::before {
+            left: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 0, 77, 0.3);
+            box-shadow: 0 20px 40px rgba(255, 0, 77, 0.2);
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff004d;
+            margin-bottom: 1rem;
+        }
+
+        .service-card p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .price-list {
+            list-style: none;
+        }
+
+        .price-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .price-list li:last-child {
+            border-bottom: none;
+        }
+
+        .price {
+            color: #ff004d;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* Контакты */
+        .contact-section {
+            background: linear-gradient(135deg, rgba(255, 0, 77, 0.05) 0%, rgba(0, 0, 0, 0.2) 100%);
+            border-radius: 12px;
+            padding: 4rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin: 4rem 0;
+        }
+
+        .contact-button {
+            background: linear-gradient(135deg, #ff004d, #b6004c);
+            color: #ffffff;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 0, 77, 0.3);
+            margin-top: 1.5rem;
+        }
+
+        .contact-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 0, 77, 0.4);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 1024px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            nav {
+                padding: 0 2rem;
+            }
+            
+            section {
+                padding: 4rem 2rem;
+            }
+            
+            .hero-bg {
+                margin: 1rem;
+            }
+            
+            .stats-panel {
+                flex-direction: column;
+                gap: 2rem;
+                padding: 2rem;
+                left: 1rem;
+                right: 1rem;
+            }
+        }
+
+        /* Эффекты прокрутки */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Скроллбар */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ff004d, #b6004c);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #b6004c, #ff004d);
+        }
+
+        /* Иконки эмуляция */
+        .icon {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            color: inherit;
+        }
+
+        .icon-large {
+            width: 32px;
+            height: 32px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="brand">
+                <div class="logo"></div>
+                CoolPlugin
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Главная</a></li>
+                <li><a href="#about">О студии</a></li>
+                <li><a href="#services">Услуги</a></li>
+                <li><a href="#contact">Контакты</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-bg general-background"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Современная студия</h1>
+                <h2 class="general-text">разработки плагинов</h2>
+                <p>Создаем инновационные плагины, уникальные дизайны и современные постройки. Воплощаем ваши идеи в цифровую реальность с безупречным качеством и профессиональным подходом.</p>
+                <a href="#services" class="hero-button smooth">
+                    <span>→</span>
+                    Заказать проект
+                </a>
+            </div>
+            <div></div>
+        </div>
+        <div class="stats-panel general-panel">
+            <div class="stat-item">
+                <div>
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">довольных клиентов</div>
+                </div>
+            </div>
+            <div style="width: 1px; height: 40px; background: rgba(255,255,255,0.1);"></div>
+            <div class="stat-item">
+                <div>
+                    <div class="stat-number">250+</div>
+                    <div class="stat-label">выполненных проектов</div>
+                </div>
+            </div>
+            <div style="width: 1px; height: 40px; background: rgba(255,255,255,0.1);"></div>
+            <div class="stat-item">
+                <div>
+                    <div class="stat-number">2+ года</div>
+                    <div class="stat-label">опыта работы</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="fade-in">
+        <div class="section-title">Наши преимущества</div>
+        <p class="section-subtitle">Наши главные преимущества, и почему вы должны выбрать именно нас.</p>
+        
+        <div class="about-grid">
+            <div class="about-text">
+                <p>Мы — команда профессиональных разработчиков и дизайнеров, специализирующихся на создании высококачественных плагинов, дизайна и построек. Наша студия сочетает в себе технические навыки, креативность и стремление к совершенству.</p>
+                <br>
+                <p>С момента основания мы реализовали множество проектов, от простых плагинов до сложных архитектурных решений. Каждый проект — это уникальная история успеха наших клиентов.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card smooth">
+                    <h3>Быстрая разработка</h3>
+                    <p>Используем передовые технологии и современные подходы для быстрой реализации проектов</p>
+                </div>
+                <div class="feature-card smooth">
+                    <h3>Высокое качество</h3>
+                    <p>Тщательная проработка каждой детали и многоуровневое тестирование</p>
+                </div>
+                <div class="feature-card smooth">
+                    <h3>Надёжность</h3>
+                    <p>Гарантируем стабильную работу и долгосрочную поддержку наших решений</p>
+                </div>
+                <div class="feature-card smooth">
+                    <h3>Поддержка 24/7</h3>
+                    <p>Наша техническая поддержка всегда готова помочь в решении любых вопросов</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="fade-in">
+        <div class="section-title">Наши услуги</div>
+        <p class="section-subtitle">Выберите тот тариф, который подходит именно вам.</p>
+        
+        <div class="services-grid">
+            <div class="service-card smooth">
+                <h3>Сборка плагинов</h3>
+                <p>Комплексная сборка и настройка плагинов под ваши требования. Полная интеграция и оптимизация для максимальной производительности.</p>
+                <ul class="price-list">
+                    <li>
+                        <span>Полная сборка</span>
+                        <span class="price">5 000 ₽</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="service-card smooth">
+                <h3>Разработка плагинов</h3>
+                <p>Создание уникальных плагинов любой сложности. От простых утилит до сложных игровых механик.</p>
+                <ul class="price-list">
+                    <li>
+                        <span>Лёгкий плагин</span>
+                        <span class="price">250 ₽</span>
+                    </li>
+                    <li>
+                        <span>Средний плагин</span>
+                        <span class="price">500 ₽</span>
+                    </li>
+                    <li>
+                        <span>Сложный плагин</span>
+                        <span class="price">1 000 ₽</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="service-card smooth">
+                <h3>Дизайн</h3>
+                <p>Профессиональный дизайн интерфейсов, логотипов, баннеров и графических элементов. Современные решения для вашего проекта.</p>
+                <ul class="price-list">
+                    <li>
+                        <span>Малый проект</span>
+                        <span class="price">150 ₽</span>
+                    </li>
+                    <li>
+                        <span>Средний проект</span>
+                        <span class="price">350 ₽</span>
+                    </li>
+                    <li>
+                        <span>Большой проект</span>
+                        <span class="price">550 ₽</span>
+                    </li>
+                    <li>
+                        <span>Крупный проект</span>
+                        <span class="price">800 ₽</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="service-card smooth">
+                <h3>Постройки</h3>
+                <p>Архитектурные решения и постройки любой сложности. От небольших строений до масштабных городов и комплексов.</p>
+                <ul class="price-list">
+                    <li>
+                        <span>Малая постройка</span>
+                        <span class="price">500 ₽</span>
+                    </li>
+                    <li>
+                        <span>Средняя постройка</span>
+                        <span class="price">1 500 ₽</span>
+                    </li>
+                    <li>
+                        <span>Большая постройка</span>
+                        <span class="price">2 500 ₽</span>
+                    </li>
+                    <li>
+                        <span>Колоссальная постройка</span>
+                        <span class="price">3 500 ₽</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="fade-in">
+        <div class="contact-section">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem; color: #ffffff;">Присоединяйтесь к нам уже сейчас!</h2>
+            <p style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.7);">А наша поддержка всегда поможет в решении любых проблем.</p>
+            <a href="#" class="contact-button smooth">
+                 Связаться в ВК
+            </a>
+        </div>
+    </section>
+
+    <script>
+        // Плавная прокрутка для якорных ссылок
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Анимация появления элементов при скролле
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Наблюдаем за элементами с классом fade-in
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Добавляем эффект parallax для hero секции
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero-bg');
+            if (hero && scrolled < window.innerHeight) {
+                hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+            }
+        });
+
+        // Анимация логотипа при загрузке
+        window.addEventListener('load', () => {
+            const logo = document.querySelector('.logo');
+            if (logo) {
+                logo.style.animation = 'pulse 2s ease-in-out infinite';
+            }
+        });
+
+        // Добавляем hover эффекты для карточек
+        document.querySelectorAll('.service-card, .feature-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>
